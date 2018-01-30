@@ -5,3 +5,10 @@
 [![Github file size](https://img.shields.io/github/size/webcaetano/craft/build/phaser-craft.min.js.svg)](https://github.com/YuriyLisovskiy/TestRepo)
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)](https://github.com/YuriyLisovskiy/TestRepo)
+
+[![GitHub top language](https://img.shields.io/badge/language-C%2B%2B-red.svg)](https://github.com/YuriyLisovskiy/TestRepo)
+
+<details>
+    <summary>Title 1</summary>
+    <p>Content 1 Content 1 Content 1 Content 1 Content 1</p>
+</details>
