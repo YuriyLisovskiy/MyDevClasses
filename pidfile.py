@@ -4,6 +4,7 @@ import os
 import portalocker as locker
 
 
+# Requires portalocker==1.3.0
 class PidFile(object):
 	"""Context manager that locks a pid file.  Implemented as class
 	not generator because daemon.py is calling .__exit__() with no parameters
