@@ -1,0 +1,112 @@
+
+		private readonly Mock<DbSet<{{ entity }}>> _mockDbSet = MockProvider.GetMockSet(GetTestData().AsQueryable());
+
+		private static IEnumerable<{{ entity }}> GetTestData()
+		{
+			return new[]
+			{
+				TestData.{{ entity }}1,
+				TestData.{{ entity }}2
+			};
+		}
+
+		private Mock<ScientificReportDbContext> GetMockContext()
+		{
+			var mockContext = new Mock<ScientificReportDbContext>();
+			mockContext.Setup(item => item.{{ entity }}s).Returns(_mockDbSet.Object);
+			return mockContext;
+		}
+
+		[Fact]
+		public void GetAllTest()
+		{
+			var list = GetTestData().AsQueryable();
+
+			var mockContext = new Mock<ScientificReportDbContext>();
+			mockContext.Setup(item => item.{{ entity }}s).Returns(MockProvider.GetMockSet(list).Object);
+			var service = new {{ entity }}Service(mockContext.Object);
+
+			var actual = service.GetAll();
+
+			Assert.Equal(list.Count(), actual.Count());
+		}
+
+		[Fact]
+		public void GetAllWhereTest()
+		{
+			var service = new {{ entity }}Service(GetMockContext().Object);
+			var actual = service.GetAllWhere(u => u.Id.Equals(TestData.{{ entity }}1.Id));
+			Assert.Single(actual);
+		}
+
+		[Fact]
+		public void GetByIdTest()
+		{
+			var expected = GetTestData().First();
+			var service = new {{ entity }}Service(GetMockContext().Object);
+
+			var actual = service.GetById(expected.Id);
+
+			Assert.NotNull(actual);
+			Assert.Equal(expected.Id, actual.Id);
+		}
+
+		[Fact]
+		public void CreateItemTest()
+		{
+			var service = new {{ entity }}Service(GetMockContext().Object);
+
+			var expected = TestData.{{ entity }}3;
+			service.CreateItem(expected);
+
+			_mockDbSet.Verify(m => m.Add(It.IsAny<{{ entity }}>()), Times.Once);
+		}
+
+		[Fact]
+		public void UpdateItemTest()
+		{
+			var service = new {{ entity }}Service(GetMockContext().Object);
+
+			var expected = GetTestData().First();
+			expected.Title = TestData.{{ entity }}3.Title;
+			service.UpdateItem(expected);
+
+			_mockDbSet.Verify(m => m.Update(expected), Times.Once);
+		}
+
+		[Fact]
+		public void DeleteItemTest()
+		{
+			var mockContext = GetMockContext();
+			var service = new {{ entity }}Service(mockContext.Object);
+
+			var item = mockContext.Object.{{ entity }}s.First();
+
+			Assert.True(service.Exists(item.Id));
+
+			service.DeleteById(item.Id);
+
+			Assert.False(service.Exists(item.Id));
+		}
+
+		[Fact]
+		public void ExistsTest()
+		{
+			var service = new {{ entity }}Service(GetMockContext().Object);
+
+			var item = GetTestData().First();
+			var exists = service.Exists(item.Id);
+
+			Assert.True(exists);
+		}
+
+		[Fact]
+		public void DoesNotExistTest()
+		{
+			var service = new {{ entity }}Service(GetMockContext().Object);
+
+			var item = TestData.{{ entity }}3;
+			var exists = service.Exists(item.Id);
+
+			Assert.False(exists);
+		}
